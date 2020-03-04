@@ -1,0 +1,62 @@
+# remap prefix to Control + a
+set -g prefix C-a
+# bind 'C-z C-z' to type 'C-z'
+bind C-a send-prefix
+unbind C-b
+
+
+# set -g default-shell $SHELL
+
+bind r source-file ~/.tmux.conf
+
+# larger history buffer
+set-option -g history-limit 20000
+
+# Default terminal is 256 colors
+set -g default-terminal "screen-256color"
+
+# split panes using | and -
+bind-key \\ split-window -h -c '#{pane_current_path}' # Split panes horitontal
+bind-key - split-window -v -c '#{pnane_current_path}' # Split panes vertically
+
+set -g terminal-overrides "xterm*:kLFT5=\eOD:kRIT5=\eOC:kUP5=\eOA:kDN5=\eOB:smkx@:rmkx@"
+
+
+set-window-option -g xterm-keys on
+
+bind c new-window -c "#{pane_current_path}"
+unbind '"'
+unbind %
+
+# switch panes using Alt-arrow without prefix
+bind -n M-C-Left select-pane -L
+bind -n M-C-Right select-pane -R
+bind -n M-C-Up select-pane -U
+bind -n M-C-Down select-pane -D
+
+# Enable mouse mode (tmux 2.1 and above)
+set-option -g mouse on
+
+# don't rename windows automatically
+set-option -g allow-rename off
+
+set -sg escape-time 0
+set -sg repeat-time 0
+
+# Start windows and panes at 1, not 0
+set -g base-index 1
+setw -g pane-base-index 1
+
+set-window-option -g mode-keys vi
+
+### copy & paste -------------------------------------------------------
+# Use vim keybindings in copy mode
+setw -g mode-keys vi
+# Setup 'v' to begin selection as in Vim
+bind-key -T copy-mode-vi v send -X begin-selection
+bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "reattach-to-user-namespace pbcopy"
+# Update default binding of `Enter` to also use copy-pipe
+unbind -T copy-mode-vi Enter
+bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "reattach-to-user-namespace pbcopy"
+bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "pbcopy"
+
